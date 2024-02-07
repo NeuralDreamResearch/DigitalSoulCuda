@@ -176,6 +176,31 @@ namespace kernels
         *output=((*LogicID)>>recall_index & 1);
     }
 
+
+    template<typename T, typename s> __global__ void poly(T *a, T operand,T *c,s *N_1)
+	{
+	c[threadIdx.x]= a[threadIdx.x] * pow(operand, (*N_1)-threadIdx.x);
+	}
+	
+	template<typename T>
+	void matmul(T *A, T *B, T *C, size_t N, size_t K, size_t M)
+	{
+	    for (size_t n = 0; n < N; n++)
+	    {
+	    	const size_t ind1 = n * K;
+		for (size_t m = 0; m < M; m++)
+		{    
+		    T loader=0;
+		    for (size_t k = 0; k < K; ++k)
+		    {
+
+		        loader+= A[ind1 + k] * B[k * M + m];
+		    }
+		    C[n*M+m]=loader;
+		}
+	    }
+	};
+
 }
 
 class LUTx_1 {
